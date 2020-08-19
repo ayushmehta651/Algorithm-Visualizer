@@ -1,12 +1,26 @@
+
+  .navbar-dark{
+    background-color: #000000;
+    background-color: #303033;
+  }
+
 .array-container {
-    position: absolute;
-    left: 100px;
-    right: 100px;
-    /* top: 100px; */
-  }
-  
-  .array-bar {
-    width: 2px;
-    display: inline-block;
-    margin: 0 1px;
-  }
+  position: absolute;
+  left: 100px;
+  right: 100px;
+  /* top: 100px; */
+}
+
+.array-bar {
+  width: 100px;
+  display: inline-block;
+  margin: 0 1px;
+}
+
+.buttons{
+  background-color: Transparent;
+  background-repeat:no-repeat;
+  border: none;
+  cursor:pointer;
+  overflow: hidden;  
+}
