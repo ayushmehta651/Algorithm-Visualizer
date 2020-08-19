@@ -1,12 +1,12 @@
 import React from 'react';
 import { Navbar, Button } from 'reactstrap';
-import {getMergeSortAnimations} from '../sortingAlgorithms/mergeSort.js';
 import { getBubbleSortAnimations } from '../sortingAlgorithms/bubbleSort.js';
-import { getInsertionSortAnimations } from '../sortingAlgorithms/insertionSort.js';
+import {getMergeSortAnimations} from '../sortingAlgorithms/mergeSort.js';
+import {getInsertionSortAnimations} from '../sortingAlgorithms/insertionSort.js';
 import './SortingVisualizer.css';
 
 // Change this value for the speed of the animations.
-const ANIMATION_SPEED_MS = 5;
+const ANIMATION_SPEED_MS = 10;
 
 // Change this value for the number of bars (value) in the array.
 const NUMBER_OF_ARRAY_BARS = 92;
@@ -36,6 +36,32 @@ export default class SortingVisualizer extends React.Component {
       array.push(randomIntFromInterval(5, 730));
     }
     this.setState({array});
+  }
+
+  insertionSort() {
+    const [animations,sortArray] = getInsertionSortAnimations(this.state.array);
+    for (let i = 0; i < animations.length; i++) {
+        const isColorChange = (animations[i][0] === "comparision1") || (animations[i][0] === "comparision2");
+        const arrayBars = document.getElementsByClassName('array-bar');
+        if(isColorChange === true) {
+            const color = (animations[i][0] === "comparision1") ? SECONDARY_COLOR : PRIMARY_COLOR;
+            const [temp, barOneIndex, barTwoIndex] = animations[i];
+            const barOneStyle = arrayBars[barOneIndex].style;
+            const barTwoStyle = arrayBars[barTwoIndex].style;
+            setTimeout(() => {
+                barOneStyle.backgroundColor = color;
+                barTwoStyle.backgroundColor = color;
+            },i * ANIMATION_SPEED_MS);
+        }
+        else {
+            const [temp, barIndex, newHeight] = animations[i];
+            const barStyle = arrayBars[barIndex].style;
+            setTimeout(() => {
+                barStyle.height = `${newHeight}px`;
+            },i * ANIMATION_SPEED_MS);  
+        }
+    }
+    
   }
 
   mergeSort() {
@@ -108,6 +134,7 @@ export default class SortingVisualizer extends React.Component {
       var jBarStyle = arrayBars[j].style;
       jBarStyle.backgroundColor = "limegreen";
     }
+  
   }
 
   // NOTE: This method will only work if your sorting algorithms actually return
