@@ -1,26 +1,38 @@
 
-  export function getBubbleSortAnimations(array){
-      const animations = [];
-      if(array.length <= 1) return array;
-      const auxiliaryArray = array.slice();
-      doBubbleSort(animations,auxiliaryArray);
+  export function getBubbleSortAnimations(array) {
+    let animations  = [];
+    let auxillaryArray = array.slice();
+    doBubbleSort(animations,auxillaryArray);
+    array = auxillaryArray;
+    return [animations, array];
+}
 
-      return animations;
-  }
+  function doBubbleSort(animations,auxillaryArray) {
+    const N = auxillaryArray.length;
+    let length = N - 1;
+    while(length > 0) {
+        let swapped = false;
+        for(let i = 0; i < length; ++i) {
+            animations.push(["comparision1", i, i + 1]);
+            animations.push(["comparision2", i, i + 1]);
+            if(auxillaryArray[i] > auxillaryArray[i + 1]) {
+                swapped = true;
+                animations.push(["swap", i, auxillaryArray[i + 1]]);
+                animations.push(["swap", i + 1, auxillaryArray[i]]);
+                swap(auxillaryArray, i, i + 1);
+            }
+        }
+        if(swapped === false) 
+            break;  //Alraedy sorted
+        length--;
+    }
+}
 
-  export function doBubbleSort(animations,auxiliaryArray){
+function swap(auxillaryArray, firstIndex, secondIndex) {
+    let temp = auxillaryArray[firstIndex];
+    auxillaryArray[firstIndex] = auxillaryArray[secondIndex];
+    auxillaryArray[secondIndex] = temp;
+}
 
-      for(let i=0;i<auxiliaryArray.length-1;i++) {
-          for(let j=0;j<auxiliaryArray.length-i-1;j++) {
-              if(auxiliaryArray[j] > auxiliaryArray[j+1]) {
-                    var temp = auxiliaryArray[j];
-                    auxiliaryArray[j] = auxiliaryArray[j+1];
-                    auxiliaryArray[j+1] = temp;
 
-                    animations.push([j,j+1]);
-              }
-          }
-      }
 
-      return auxiliaryArray;
-  }
