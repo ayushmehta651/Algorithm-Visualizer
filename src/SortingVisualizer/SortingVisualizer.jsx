@@ -4,16 +4,17 @@ import { getBubbleSortAnimations } from '../sortingAlgorithms/bubbleSort.js';
 import {getMergeSortAnimations} from '../sortingAlgorithms/mergeSort.js';
 import {getInsertionSortAnimations} from '../sortingAlgorithms/insertionSort.js';
 import {getSelectionSortAnimations} from '../sortingAlgorithms/selectionSort.js';
+import {getQuickSortAnimations} from '../sortingAlgorithms/quickSort.js';
 import './SortingVisualizer.css';
 
 // Change this value for the speed of the animations.
-const ANIMATION_SPEED_MS = 5;
+const ANIMATION_SPEED_MS = 20;
 
 // Change this value for the number of bars (value) in the array.
 const NUMBER_OF_ARRAY_BARS = 92;
 
 // This is the main color of the array bars.
-const PRIMARY_COLOR = 'turquoise';
+const PRIMARY_COLOR = 'limegreen';
 
 // This is the color of array bars that are being compared throughout the animations.
 const SECONDARY_COLOR = 'red';
@@ -34,7 +35,7 @@ export default class SortingVisualizer extends React.Component {
   resetArray() {
     const array = [];
     for (let i = 0; i < NUMBER_OF_ARRAY_BARS; i++) {
-      array.push(randomIntFromInterval(5, 650));
+      array.push(randomIntFromInterval(5, 600));
     }
     this.setState({array});
   }
@@ -141,24 +142,34 @@ export default class SortingVisualizer extends React.Component {
   }
 
   quickSort() {
-    // We leave it as an exercise to the viewer of this code to implement this method.
+    const [animations,sortArray] = getQuickSortAnimations(this.state.array);
+    for (let i = 0; i < animations.length; i++) {
+        const isColorChange = animations[i][0] === "comparision1" || animations[i][0] === "comparision2";
+        const arrayBars = document.getElementsByClassName('array-bar');
+        if(isColorChange === true) {
+            const color = (animations[i][0] === "comparision1") ? SECONDARY_COLOR : PRIMARY_COLOR;
+            const [comparision, barOneIndex, barTwoIndex] = animations[i];
+            const barOneStyle = arrayBars[barOneIndex].style;
+            const barTwoStyle = arrayBars[barTwoIndex].style;
+            setTimeout(() => {
+                barOneStyle.backgroundColor = color;
+                barTwoStyle.backgroundColor = color;
+            },i * ANIMATION_SPEED_MS);
+        }
+        else {
+            const [swap, barIndex, newHeight] = animations[i];
+            const barStyle = arrayBars[barIndex].style;
+
+            setTimeout(() => {
+                barStyle.height = `${newHeight}px`;
+            },i * ANIMATION_SPEED_MS);  
+        }
+    }
   }
 
   // NOTE: This method will only work if your sorting algorithms actually return
   // the sorted arrays; if they return the animations (as they currently do), then
   // this method will be broken.
-  testSortingAlgorithms() {
-    for (let i = 0; i < 100; i++) {
-      const array = [];
-      const length = randomIntFromInterval(1, 1000);
-      for (let i = 0; i < length; i++) {
-        array.push(randomIntFromInterval(-1000, 1000));
-      }
-      const javaScriptSortedArray = array.slice().sort((a, b) => a - b);
-      const mergeSortedArray = getMergeSortAnimations(array.slice());
-      console.log(arraysAreEqual(javaScriptSortedArray, mergeSortedArray));
-    }
-  }
 
   render() {
     const {array} = this.state;
@@ -168,14 +179,11 @@ export default class SortingVisualizer extends React.Component {
       <div className="array">
            <Navbar dark>
         <Button className="buttons" onClick={() => this.resetArray()}>Generate New Array</Button>
-        <Button className="buttons" onClick={() => this.selectionSort()}>Selection Sort</Button>
-        <Button className="buttons" onClick={() => this.insertionSort()}>Insertion Sort</Button>
-        <Button className="buttons" onClick={() => this.mergeSort()}>Merge Sort</Button>
-        <Button className="buttons" onClick={() => this.quickSort()}>Quick Sort</Button>
-        <Button className="buttons" onClick={() => this.bubbleSort()}>Bubble Sort</Button>
-        <Button className="buttons" onClick={() => this.testSortingAlgorithms()}>
-          Test Sorting Algorithms (BROKEN)
-        </Button>
+        <Button className="buttons" onClick={() => this.bubbleSort()}>Bubble Sort O(n^2))</Button>
+        <Button className="buttons" onClick={() => this.selectionSort()}>Selection Sort (O(n^2))</Button>
+        <Button className="buttons" onClick={() => this.insertionSort()}>Insertion Sort (O(n^2))</Button>
+        <Button className="buttons" onClick={() => this.mergeSort()}>Merge Sort (O(nlogn))</Button>
+        <Button className="buttons" onClick={() => this.quickSort()}>Quick Sort (O(nlogn))</Button>
         </Navbar>
         <div className="container">
         {array.map((value, idx) => (
@@ -197,14 +205,4 @@ export default class SortingVisualizer extends React.Component {
 function randomIntFromInterval(min, max) {
   // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
-}
-
-function arraysAreEqual(arrayOne, arrayTwo) {
-  if (arrayOne.length !== arrayTwo.length) return false;
-  for (let i = 0; i < arrayOne.length; i++) {
-    if (arrayOne[i] !== arrayTwo[i]) {
-      return false;
-    }
-  }
-  return true;
 }
