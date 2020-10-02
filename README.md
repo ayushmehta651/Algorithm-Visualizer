@@ -1,4 +1,5 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Description
+A React based web application which helps you understand Merge Sort,Quick Sort,Bubble sort,Insertion Sort,Selection Sort through Animations.
 
 ## Available Scripts
 
